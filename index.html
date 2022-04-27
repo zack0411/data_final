@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Pie Chart</title>
+    <link rel="stylesheet" href="./vendor/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row mb-3">
+            <div class="col-4">  
+                <div class="form-check mt-3">
+                    <input class="form-check-input" type="radio" name="pie-charts" id="general"  onclick="changePieChart('0-General')" checked>
+                    <label class="form-check-label">
+                        General Population
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="pie-charts" id="no-qualification"  onclick="changePieChart('1-No_Qualification')">
+                    <label class="form-check-label">
+                        No Qualification
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="pie-charts" id="primary" onclick="changePieChart('2-primary')">
+                    <label class="form-check-label">
+                        Primary
+                    </label>
+                </div>    
+            </div>
+            <div class="col-4">   
+                <div class="form-check mt-3">
+                    <input class="form-check-input" type="radio" name="pie-charts" id="3-Lower_second"  onclick="changePieChart('3-Lower_second')">
+                    <label class="form-check-label">
+                        Lower secondary
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="pie-charts" id="secondary" onclick="changePieChart('4-secondary')">
+                    <label class="form-check-label">
+                        Secondary
+                    </label>
+                </div> 
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="pie-charts" id="post_secondary"  onclick="changePieChart('5-post_secondary')">
+                    <label class="form-check-label">
+                        Post Secondary
+                    </label>
+                </div>    
+            </div>
+            <div class="col-4">   
+                <div class="form-check mt-3">
+                    <input class="form-check-input" type="radio" name="pie-charts" id="polytechnic" onclick="changePieChart('6-Polytechnic')">
+                    <label class="form-check-label">
+                        Polytechnic
+                    </label>
+                </div>    
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="pie-charts" id="diploma"  onclick="changePieChart('7-Diploma')" >
+                    <label class="form-check-label">
+                        Diploma
+                    </label>
+                </div>    
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="pie-charts" id="university" onclick="changePieChart('8-University')">
+                    <label class="form-check-label">
+                        University
+                    </label>
+                </div>    
+            </div>
+        </div>
+
+        <div class="row" style="background-color: #EAECEE ;">
+            <div class="col-12 mb-3">
+                <iframe id="iframe-pie-chart" src="./0-General.html" frameborder="0" width="100%" height="520px"></iframe>
+            </div>
+        </div>
+
+        <div class="row">    
+            <div class="col-4">
+                <iframe src="./Bar-ALCOHOLIC_TOBACCO.html" width=450px height=600px frameborder="0"></iframe>
+            </div>
+
+            <div class="col-4">
+                <iframe src="./Bar-Food.html" width=450px height=600px frameborder="0"></iframe>
+            </div>
+
+            <div class="col-4">
+                <iframe src="./Bar-FOOD_SERVING_SERVICES.html" width=450px height=600px frameborder="0"></iframe>
+            </div>
+            
+        </div>
+    </div>
+
+
+    <script src="../vendors/bootstrap.bundle.min.js"></script>
+    <script>
+        function changePieChart(pageName){
+            console.log(pageName);
+            document.getElementById('iframe-pie-chart').src = `./${pageName}.html`;
+        }
+    </script>
+</body>
+
+</html>

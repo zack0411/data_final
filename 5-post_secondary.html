@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>temp</title>
+    <style>
+        .canvas {
+            width: 425px;        
+            transform: translate(125px, 0px);
+        }
+
+        .tip-card {
+            /* border:1px solid black; */
+            padding: 20px;
+            background-color: dodgerblue;
+            color: white;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="canvas">        
+    </div>
+
+    <!-- <script src="../vendors/d3.min.js"></script> -->
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.13.0/d3-legend.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
+    <script>
+        d3.csv("https://raw.githubusercontent.com/xfiax/HASS-final_project/main/distribution-of-mhe-by-type-of-goods-and-services-broad-1-and-hqa-of-main-income-earner.csv", function (error, data1) {
+            // console.log(data1[1].level_1);
+
+            var data = [];
+            for (const key in data1) {
+                if (data1[key].level_1 == 'Highest Qualification Attained of Main Income Earner - Post Secondary (Non-Tertiary)' && data1[key].value != "100") {
+                    let tempData = {}
+                    tempData['name'] = data1[key].level_2;
+                    tempData['cost'] = Number(data1[key].value);
+                    data.push(tempData)
+                    // data[data1[key].level_2] = data1[key].value;
+                    // Number(data[data1[key].level_2]);
+                }
+            }
+
+            console.log(data)
+
+
+            const dims = { height: 500, width: 300, radius: 150 };
+            const cent = { x: (dims.width / 2), y: (dims.height / 2) };
+
+            const svg = d3.select('.canvas')
+                .append('svg')
+                .attr('width', dims.width + 800)
+                .attr('height', dims.height)
+
+            const graph = svg.append('g')
+                .attr('transform', `translate(${cent.x},${cent.y})`);
+
+
+            // const color = d3.scaleOrdinal(d3['schemeSet3']);
+            // color.domain(data.map(d => d.name));
+            const color = d3.scaleOrdinal()
+            .domain(data.map(d => d.name))
+            .range(["#FF6600", "#3333FF", "#EFF1EF", "#E3E7E3", "#D4DAD3", "#BFC8BE", "#BBCDBA", "#D1DDD0", "#E2E9E1", "#EEF2ED", "#990000", "#CDE0CC", "#E1ECDF", "#EDF3EC"])
+
+
+            const legendGroup = svg.append('g')
+                .attr('transform', `translate(${dims.width + 100}, 110)`);
+
+            const legend = d3.legendColor()
+                .shape('circle')
+                .scale(color);
+
+            legendGroup.call(legend);
+
+            const tip = d3.tip()
+                .attr('class', 'tip-card')
+                .html(d => {
+                    let content = `<div class="name">${d.data.name}</div>`;
+                    content += `<div class="name">${d.data.cost}</div>`;
+                    return content;
+                });
+
+            graph.call(tip);
+
+            const pie = d3.pie()
+                .sort(null)
+                .value(d => d.cost);
+
+            const angles = pie(data);
+
+
+            //console.log(angles);
+
+            const arcPath = d3.arc()
+                .outerRadius(dims.radius)
+                .innerRadius(dims.radius / 2);
+
+            //console.log(arcPath(angles[1]));
+
+            const arcTweenEnter = (d) => {
+                var i = d3.interpolate(d.endAngle, d.startAngle);
+                return function (t) {
+                    d.startAngle = i(t);
+                    return arcPath(d)
+                }
+            }
+
+            const paths = graph.selectAll('path')
+                .data(angles);
+
+            paths.exit()
+                .transition().duration(1000)
+                .attrTween('d', arcTweenEnter)
+                .remove();
+
+            paths
+                .enter()
+                .append('path')
+                .attr('class', 'arc')
+                .attr('d', arcPath)
+                .attr('stroke', '#fff')
+                .attr('stroke-width', 3)
+                .attr('fill', d => color(d.data.name))
+                .transition().duration(1000)
+                .attrTween('d', arcTweenEnter)
+
+            const handleMouseOver = (d, i, n) => {
+                // console.log(d);
+                // console.log(i);
+                // console.log(n);
+
+                d3.select(n[i])
+                    .transition('changeSliceFill').duration(300)
+                    .attr('fill', '#fff');
+            }
+
+
+            const handleMouseOut = (d, i, n) => {
+                // console.log(d);
+                // console.log(i);
+                // console.log(n);
+
+                d3.select(n[i])
+                    .transition('changeSliceFill').duration(300)
+                    .attr('fill', color(d.data.name));
+            }
+
+            const handleClick = (d) => {
+                console.log(d.data.cost);
+            }
+            graph.selectAll('path')
+                .on('mouseover', (d, i, n) => {
+                    tip.show(d, n[i]);
+                    handleMouseOver(d, i, n);
+                })
+                .on('mouseout', (d, i, n) => {
+                    tip.hide();
+                    handleMouseOut(d, i, n);
+                })
+                .on('click', handleClick);
+
+        })
+    </script>
+</body>
+
+</html>
